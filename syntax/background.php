@@ -212,10 +212,19 @@ class syntax_plugin_revealjs_background extends DokuWiki_Syntax_Plugin {
                         $slide_direction = '';
                         $conf['plugin']['revealjs']['slides_with_unknown_direction'] = true;
                     }
+                    
+                    
+                    if (defined('SEC_EDIT_PATTERN')) { // for DokuWiki Greebo and more recent versions
+                            $sectionedit = $renderer->startSectionEdit($data['position'], array('target' => 'section', 'name' => 'Slide '.$renderer->wikipage_slide_number));
+                    }
+                    else {
+                            $sectionedit = $renderer->startSectionEdit($data['position'], 'section', 'Slide '.$renderer->wikipage_slide_number);
+                    }
+                    
                     /* write slide details to page - we need to use a fake header (<h1 style="display:none...) here
                     to force dokuwiki to show correct section edit highlighting by hoovering the edit button */
                     $renderer->doc .= DOKU_LF.DOKU_LF.'<h2 style="display:none;" class="' .
-                        $renderer->startSectionEdit($data['position'], 'section', 'Slide '.$renderer->wikipage_slide_number).'"></h2>' . ($this->getConf('show_slide_details') ?
+                        $sectionedit.'"></h2>' . ($this->getConf('show_slide_details') ?
                         '<div class="slide-details-hr'.($renderer->wikipage_slide_number == 1 ? ' first-slide' : '').'"></div>' .
                         ($data['background_color'] || $data['background_image'] ?
                             '<div class="slide-details-background" style='."'".$slide_details_background."'".'></div>' :
